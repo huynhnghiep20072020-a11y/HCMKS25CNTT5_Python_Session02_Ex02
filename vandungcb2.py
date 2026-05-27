@@ -1,41 +1,21 @@
-"""
-(1) PHÂN TÍCH LỖI (BUG ANALYSIS)
+# Qua kiểm tra mã nguồn, lỗi nghiêm trọng khiến kiosk duyệt sai quy định y tế xuất phát từ việc sử dụng sai toán tử logic.
+# Cụ thể, hệ thống đang dùng toán tử or thay vì toán tử and tại dòng lệnh kiểm tra điều kiện: if donor_age >= 18 or donor_weight >= 50. code sửa đúng
+print("--- BLOOD DONOR SCREENING SYSTEM ---")
 
+# Nhập dữ liệu đầu vào từ tình nguyện viên
+donor_age = int(input("Enter donor's age: "))
+donor_weight = float(input("Enter donor's weight (kg): "))
 
-1. Dò luồng thực thi (Trace code):
-- Dòng 2-3 (Nhập liệu): Hệ thống yêu cầu nhập tên và cân nặng. Người dùng 
-  nhập 65.5 vào biến weight.
-- Dòng 5-7 (Xuất liệu): Chương trình in ra màn hình. Lúc này, chuỗi ký tự 
-  "65.5" và con số 65.5 khi hiển thị trên Console trông hoàn toàn giống nhau.
-- Dòng 9-10 (Kiểm tra): Hàm type(weight) bóc trần sự thật rằng dữ liệu 
-  đang được lưu trong bộ nhớ là một đoạn văn bản (<class 'str'>).
-
-2. Đặc điểm của hàm input() trong Python:
-- Hàm input() có một nguyên tắc hoạt động cố định: Nó LUÔN LUÔN đọc mọi 
-  dữ liệu người dùng gõ từ bàn phím dưới dạng một CHUỖI KÝ TỰ (string - str), 
-  bất kể người dùng có gõ số nguyên hay số thập phân đi chăng nữa.
-
-3. Nguyên nhân gốc rễ gây lỗi:
-- Nguyên nhân là do lập trình viên trước đó chỉ dùng hàm input() đơn thuần 
-  để lấy dữ liệu mà quên mất thao tác "Ép kiểu" (Type Casting). Hệ thống nhận 
-  được chuỗi "65.5" và gán thẳng vào biến weight. Nếu đem biến này đi tính BMI, 
-  chương trình sẽ bị crash ngay lập tức vì không thể làm toán với văn bản.
-"""
-
-
-# (2) MÃ NGUỒN ĐÃ SỬA LỖI (REFACTORED CODE)
-
-
-print("--- HỆ THỐNG NHẬP CHỈ SỐ SINH TỒN ---")
-name_patient = input("Nhập tên bệnh nhân : ")
-
-# SỬA LỖI TẠI ĐÂY: Sử dụng hàm float() bao bọc bên ngoài hàm input()
-# để ép kiểu dữ liệu từ chuỗi (str) sang số thực (float) ngay lập tức.
-weight = float(input("Nhập cân nặng bệnh nhân : "))
-
-print("\n--- KIỂM TRA DỮ LIỆU LƯU TRỮ ---")
-print("Bệnh nhân : ", name_patient)
-print("Cân nặng đã nhập : ", weight)
-
-# Lệnh kiểm tra này bây giờ sẽ trả về <class 'float'> đúng như yêu cầu
-print("CẢNH BÁO - Kiểu dữ liệu đang lưu là : ", type(weight))
+print("\n--- SCREENING RESULT ---")
+# Hệ thống kiểm tra điều kiện hiến máu (Bắt buộc thỏa mãn ĐỒNG THỜI cả hai điều kiện)
+if donor_age >= 18 and donor_weight >= 50:
+    print("Result: ELIGIBLE. Please proceed to the blood donation room.")
+else:
+    print("Result: NOT ELIGIBLE. Thank you for your interest.")
+    print("Reason(s) for rejection:")
+    
+    # Phân tích và chỉ rõ lý do không đủ điều kiện cho người khai báo
+    if donor_age < 18:
+        print("- Age must be 18 or older (Current: {} years old).".format(donor_age))
+    if donor_weight < 50:
+        print("- Weight must be 50 kg or heavier (Current: {} kg).".format(donor_weight))
